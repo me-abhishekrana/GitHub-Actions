@@ -1,0 +1,41 @@
+import jenkins.model.*
+
+// Stop Jenkins
+Jenkins.instance.doQuietDown()
+
+// Define old and new home directories
+def oldHomeDir = '/root/.jenkins'
+def newHomeDir = '/var/lib/jenkins'
+
+// Copy existing data
+def copyCommand = "cp -r ${oldHomeDir}/* ${newHomeDir}/".execute()
+copyCommand.waitFor()
+
+// Update permissions
+def chownCommand = "chown -R jenkins:jenkins ${newHomeDir}".execute()
+chownCommand.waitFor()
+
+// Update Jenkins configuration
+def configFile = new File('/etc/default/jenkins')
+def configContent = configFile.text
+configContent = configContent.replaceAll(/JENKINS_HOME=".+?"/, "JENKINS_HOME=\"${newHomeDir}\"")
+configFile.text = configContent
+configFile.text = configFile.text.replace(oldHomeDir, newHomeDir)
+configFile.text = configFile.text.replace(oldHomeDir.replaceAll("/", "\\/"), newHomeDir.replaceAll("/", "\\/"))
+configFile.text = configFile.text.replace(oldHomeDir.replaceAll("\\/", "\\\\/"), newHomeDir.replaceAll("\\/", "\\\\/"))
+
+// Save the updated configuration
+configFile.text = configFile.text.replace(oldHomeDir, newHomeDir)
+configFile.text = configFile.text.replace(oldHomeDir.replaceAll("/", "\\/"), newHomeDir.replaceAll("/", "\\/"))
+configFile.text = configFile.text.replace(oldHomeDir.replaceAll("\\/", "\\\\/"), newHomeDir.replaceAll("\\/", "\\\\/"))
+configFile.text = configFile.text.replace(oldHomeDir, newHomeDir)
+configFile.text = configFile.text.replace(oldHomeDir.replaceAll("/", "\\/"), newHomeDir.replaceAll("/", "\\/"))
+configFile.text = configFile.text.replace(oldHomeDir.replaceAll("\\/", "\\\\/"), newHomeDir.replaceAll("\\/", "\\\\/"))
+configFile.text = configFile.text.replace(oldHomeDir, newHomeDir)
+configFile.text = configFile.text.replace(oldHomeDir.replaceAll("/", "\\/"), newHomeDir.replaceAll("/", "\\/"))
+configFile.text = configFile.text.replace(oldHomeDir.replaceAll("\\/", "\\\\/"), newHomeDir.replaceAll("\\/", "\\\\/"))
+
+configFile.text = configFile.text.replace(oldHomeDir, newHomeDir)
+
+// Start Jenkins
+Jenkins.instance.doCancelQuietDown()
